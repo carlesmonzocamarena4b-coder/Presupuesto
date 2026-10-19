@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>Presupuesto</title>
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f2f2f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0b0e" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Presupuesto">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="iconos/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="iconos/icon-192.png">
+<script src="config.js"></script>
+<style>
+:root{
+  --bg:#f2f2f7;--card:#ffffff;--campo:#f2f2f7;--txt:#111114;--sub:#8a8a8e;--sep:rgba(60,60,67,.12);
+  --acento:#5856d6;--acento-suave:rgba(88,86,214,.12);--rojo:#ff3b30;--verde:#28a745;--naranja:#ff9500;
+  --sombra:0 1px 2px rgba(0,0,0,.04),0 4px 14px rgba(0,0,0,.04);
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#0b0b0e;--card:#1c1c1f;--campo:#2a2a2e;--txt:#f5f5f7;--sub:#8e8e93;--sep:rgba(255,255,255,.07);
+    --acento:#8e8cf5;--acento-suave:rgba(142,140,245,.16);--rojo:#ff6961;--verde:#4cd97b;--naranja:#ffb340;--sombra:none}
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg)}
+body{margin:0 auto;max-width:460px;background:var(--bg);color:var(--txt);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;
+  padding:calc(20px + env(safe-area-inset-top)) 18px calc(130px + env(safe-area-inset-bottom));-webkit-text-size-adjust:100%;line-height:1.3}
+button,input{font-family:inherit}
+
+/* Cabecera */
+header{display:flex;justify-content:space-between;align-items:center;margin:4px 2px 18px}
+h1{font-size:28px;font-weight:800;letter-spacing:-.02em;margin:0}
+.marca{display:flex;align-items:center;gap:11px}
+.logo{width:40px;height:40px;flex:none;filter:drop-shadow(0 2px 6px rgba(79,70,229,.35))}
+.rapidos{display:flex;gap:8px;overflow-x:auto;margin:16px -18px 0;padding:0 18px 2px;scrollbar-width:none}
+.rapidos::-webkit-scrollbar{display:none}
+.rapido{flex:none;border:1px solid var(--sep);background:none;color:var(--txt);border-radius:12px;padding:8px 12px;font-size:14px;white-space:nowrap}
+.rapido:active{background:var(--acento-suave)}
+.enlace{border:0;background:none;color:var(--acento);font-size:14px;font-weight:600;padding:0}
+.lineaFecha{display:flex;justify-content:space-between;align-items:center;margin:18px 2px 0;font-size:14px;color:var(--sub)}
+.pend{opacity:.85}
+.pill{background:var(--acento-suave);color:var(--acento);font-size:13px;font-weight:600;padding:6px 11px;border-radius:20px}
+
+/* Secciones */
+.seccion{font-size:13px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.05em;margin:30px 4px 10px}
+.card{background:var(--card);border-radius:20px;padding:18px;box-shadow:var(--sombra)}
+.sub{color:var(--sub);font-size:13px}
+.pos{color:var(--verde)}.neg{color:var(--rojo)}
+
+/* Héroe */
+.hero .grande{font-size:46px;font-weight:800;letter-spacing:-.03em;margin:4px 0 18px}
+.stats{display:flex}
+.stats div{flex:1;padding:0 12px;border-left:1px solid var(--sep)}
+.stats div:first-child{padding-left:0;border-left:0}
+.stats b{display:block;font-size:16px;margin-top:3px}
+.reparto{margin-top:16px;padding-top:14px;border-top:1px solid var(--sep);display:flex;justify-content:space-between}
+
+/* Formulario */
+.seg{display:flex;background:var(--campo);border-radius:11px;padding:3px}
+.seg button{flex:1;border:0;background:none;padding:9px 4px;border-radius:9px;font-size:14px;color:var(--sub);font-weight:500}
+.seg button.on{background:var(--card);color:var(--txt);font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+input.importe{display:block;width:100%;font-size:48px;font-weight:800;letter-spacing:-.02em;border:0;background:none;
+  color:var(--txt);text-align:center;outline:none;margin:22px 0 18px;padding:0}
+input.importe::placeholder{color:var(--sub);opacity:.5}
+input.campo{display:block;width:100%;font-size:16px;padding:13px 14px;border:0;border-radius:12px;background:var(--campo);
+  color:var(--txt);outline:none;-webkit-appearance:none;min-height:46px}
+.etq{font-size:13px;color:var(--sub);margin:20px 2px 8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:0;background:var(--campo);color:var(--txt);border-radius:20px;padding:9px 14px;font-size:14px}
+.chip.on{background:var(--acento);color:#fff;font-weight:600}
+.boton{width:100%;margin-top:24px;padding:16px;font-size:17px;font-weight:600;border:0;border-radius:14px;background:var(--acento);color:#fff}
+.boton:disabled{opacity:.5}
+.oculto{display:none!important}
+
+/* Listas */
+.fila{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 0;border-top:1px solid var(--sep)}
+.fila:first-child{border-top:0;padding-top:0}
+.fila:last-child{padding-bottom:0}
+.barra{height:5px;border-radius:3px;background:var(--campo);margin-top:8px;overflow:hidden}
+.barra i{display:block;height:100%;border-radius:3px;background:var(--acento)}
+.barra.verde i{background:var(--verde)}
+.cat{padding:11px 0}
+.cat:first-child{padding-top:0}.cat:last-child{padding-bottom:0}
+.cat .top{display:flex;justify-content:space-between;font-size:15px}
+.icono{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex:none;background:var(--campo)}
+.mov{display:flex;align-items:center;gap:12px;min-width:0}
+.mov .txt{min-width:0}
+.mov .nom{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:15px}
+.borrar{border:0;background:none;color:var(--sub);font-size:15px;padding:6px 2px 6px 8px;opacity:.6}
+.mas{display:block;width:100%;margin-top:14px;border:0;background:none;color:var(--acento);font-size:15px;font-weight:600;padding:6px}
+.nota{font-size:13px;color:var(--sub);margin:12px 4px 0;line-height:1.4}
+
+/* Estado de la conexión / pendientes */
+#estado{display:flex;align-items:center;gap:8px;margin:-8px 2px 16px;font-size:13px;color:var(--sub)}
+#estado .punto{width:8px;height:8px;border-radius:50%;background:var(--naranja);flex:none}
+#estado.offline .punto{background:var(--sub)}
+#estado button{margin-left:auto}
+.pend .sinEnviar{color:var(--naranja);font-weight:600}
+/* Pantalla de conexión */
+.overlay{position:fixed;inset:0;z-index:40;background:var(--bg);overflow:auto;
+  padding:calc(40px + env(safe-area-inset-top)) 18px 40px}
+.overlay .card{max-width:460px;margin:0 auto}
+.overlay h2{font-size:22px;margin:0 0 6px}
+
+#aviso{position:fixed;left:50%;bottom:calc(112px + env(safe-area-inset-bottom));z-index:30;transform:translateX(-50%) translateY(10px);background:rgba(28,28,30,.95);color:#fff;
+  padding:12px 20px;border-radius:24px;font-size:15px;opacity:0;transition:all .25s;pointer-events:none;white-space:nowrap}
+#aviso.ver{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Páginas y barra inferior (estilo Revolut) */
+.pagina{display:none}
+.pagina.activa{display:block;animation:entra .22s ease}
+@keyframes entra{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.pagina > .seccion:first-child{margin-top:8px}
+nav.barraTabs{position:fixed;z-index:20;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom));
+  width:calc(100% - 28px);max-width:430px;display:flex;gap:4px;padding:6px;border-radius:36px;
+  background:rgba(255,255,255,.78);border:1px solid rgba(60,60,67,.10);
+  -webkit-backdrop-filter:blur(22px) saturate(160%);backdrop-filter:blur(22px) saturate(160%);
+  box-shadow:0 10px 30px rgba(0,0,0,.12)}
+nav.barraTabs button{flex:1;border:0;background:none;color:var(--sub);display:flex;flex-direction:column;align-items:center;
+  gap:5px;padding:10px 4px 9px;border-radius:30px;font-size:12.5px;font-weight:600;transition:background .2s,color .2s}
+nav.barraTabs svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}
+nav.barraTabs button.on{color:var(--txt);background:rgba(120,120,128,.14)}
+@media (prefers-color-scheme:dark){
+  nav.barraTabs{background:rgba(32,30,38,.72);border-color:rgba(255,255,255,.09);box-shadow:0 10px 30px rgba(0,0,0,.5)}
+  nav.barraTabs button.on{background:rgba(255,255,255,.10)}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="marca"><svg class="logo" viewBox="0 0 64 64" aria-hidden="true">
+  <defs>
+    <linearGradient id="fondo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8B7CF8"/>
+      <stop offset="1" stop-color="#4F46E5"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="url(#fondo)"/>
+  <rect x="12" y="40" width="9" height="12" rx="3" fill="#fff" opacity=".5"/>
+  <rect x="25" y="33" width="9" height="19" rx="3" fill="#fff" opacity=".75"/>
+  <rect x="38" y="26" width="9" height="26" rx="3" fill="#fff"/>
+  <circle cx="47" cy="16" r="8.5" fill="#4CD97B" stroke="#5A4FEA" stroke-width="2"/>
+  <path d="M50.2 12.6a4.6 4.6 0 1 0 0 6.8M42.6 14.9h5.2M42.6 17.3h5.2" fill="none" stroke="#123b22" stroke-width="1.7" stroke-linecap="round"/>
+</svg>
+<h1>Presupuesto</h1></div>
+  <span class="pill" id="semana">…</span>
+</header>
+<div id="estado" class="oculto"><span class="punto"></span><span id="textoEstado"></span><button class="enlace" id="reintentar">Enviar ahora</button></div>
+
+<!-- ===== PÁGINA 1: INICIO ===== -->
+<main class="pagina activa" id="pag-inicio">
+
+<!-- ESTA SEMANA -->
+<div class="card hero">
+  <div class="sub">Te queda esta semana</div>
+  <div class="grande" id="teQueda">–</div>
+  <div class="stats">
+    <div><span class="sub">Presupuesto</span><b id="presupuesto">–</b></div>
+    <div><span class="sub">Padres</span><b id="padres">–</b></div>
+    <div><span class="sub">Gastado</span><b id="gastado">–</b></div>
+  </div>
+  <div class="reparto sub"><span id="dePadres"></span><span id="tuyo"></span></div>
+</div>
+
+<!-- APUNTAR -->
+<div class="seccion">Apuntar</div>
+<div class="card">
+  <div class="seg" id="tipo">
+    <button class="on" data-v="Gasto">Gasto</button>
+    <button data-v="Recibido">Bizum recibido</button>
+    <button data-v="Padres">Padres</button>
+  </div>
+  <div class="rapidos oculto" id="rapidos"></div>
+  <input id="importe" class="importe" type="text" inputmode="decimal" enterkeyhint="done" placeholder="0,00 €" autocomplete="off">
+  <div id="bloqueMov">
+    <input id="concepto" class="campo" type="text" enterkeyhint="done" placeholder="Descripción (ej: mercadona)" autocomplete="off">
+    <div class="etq">Categoría</div>
+    <div class="chips" id="categorias"></div>
+  </div>
+  <div class="etq" id="etiquetaBanco">Banco</div>
+  <div class="seg" id="banco">
+    <button class="on" data-v="Revolut">Revolut</button>
+    <button data-v="Bankinter">Bankinter</button>
+    <button data-v="Efectivo">Efectivo</button>
+  </div>
+  <div id="bloqueFecha">
+    <div class="lineaFecha" id="lineaFecha"><span id="textoFecha">Fecha: hoy</span><button class="enlace" id="cambiarFecha">Cambiar</button></div>
+    <input id="fecha" class="campo oculto" type="date" style="margin-top:10px">
+  </div>
+  <div class="oculto" id="bloqueSemana">
+    <div class="etq">¿Para qué semana es?</div>
+    <div class="seg" id="semanaPadres">
+      <button class="on" data-v="0" id="btnEsta">Esta semana</button>
+      <button data-v="1" id="btnProxima">Próxima</button>
+    </div>
+  </div>
+  <div class="nota oculto" id="notaPadres">Se suma al dinero de tus padres de la semana elegida.</div>
+  <button class="boton" id="guardar">Guardar gasto</button>
+</div>
+
+</main>
+
+<!-- ===== PÁGINA 2: MOVIMIENTOS ===== -->
+<main class="pagina" id="pag-movimientos">
+
+<!-- ÚLTIMOS -->
+<div class="seccion">Últimos movimientos</div>
+<div class="card">
+  <div id="ultimos"></div>
+  <button class="mas oculto" id="verMas">Ver más</button>
+</div>
+
+</main>
+
+<!-- ===== PÁGINA 3: RESUMEN ===== -->
+<main class="pagina" id="pag-resumen">
+
+<!-- DEBERÍAS TENER -->
+<div class="seccion">Deberías tener</div>
+<div class="card" id="cuentas"></div>
+<div class="nota">Calculado con lo que has apuntado. Si tu app del banco marca otra cantidad, falta apuntar algo.</div>
+
+<!-- AHORRO -->
+<div class="seccion">Ahorro</div>
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:baseline">
+    <span><b id="ahorro" style="font-size:20px">–</b> <span class="sub" id="objetivo"></span></span>
+    <span class="sub" id="pct"></span>
+  </div>
+  <div class="barra verde" style="height:8px;margin-top:12px"><i id="barraAhorro" style="width:0"></i></div>
+  <div class="fila" style="margin-top:16px;padding-top:14px;border-top:1px solid var(--sep)">
+    <span>Dinero libre (tuyo)</span><b id="dineroLibre">–</b>
+  </div>
+</div>
+
+<!-- CATEGORÍAS -->
+<div class="seccion">Gasto por categoría</div>
+<div class="card" id="cats"></div>
+<button class="mas" id="abrirConexion" style="margin-top:24px">Conexión con la hoja</button>
+
+</main>
+
+<nav class="barraTabs" id="barraTabs">
+  <button class="on" data-p="inicio" aria-label="Inicio">
+    <svg viewBox="0 0 24 24"><path d="M3.5 10.5 12 3.8l8.5 6.7"/><path d="M5.8 9v10.2h12.4V9"/><path d="M10 19.2v-5.4h4v5.4"/></svg>Inicio</button>
+  <button data-p="movimientos" aria-label="Movimientos">
+    <svg viewBox="0 0 24 24"><path d="M4 8h15.5"/><path d="m15.5 4 4 4-4 4"/><path d="M20 16H4.5"/><path d="m8.5 12-4 4 4 4"/></svg>Movimientos</button>
+  <button data-p="resumen" aria-label="Resumen">
+    <svg viewBox="0 0 24 24"><path d="M5 20v-6"/><path d="M10 20v-9"/><path d="M15 20v-6"/><path d="M20 20V8"/><path d="m4 10 5.5-5 4.5 4 6-5.5"/></svg>Resumen</button>
+</nav>
+
+<div class="overlay oculto" id="conexion">
+  <div class="card">
+    <h2>Conectar con tu hoja</h2>
+    <div class="sub">Solo hace falta la primera vez. Se guarda en este iPhone.</div>
+    <div class="etq">URL de la API (acaba en /exec)</div>
+    <input id="cfgUrl" class="campo" type="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://script.google.com/macros/s/…/exec">
+    <div class="etq">Clave</div>
+    <input id="cfgClave" class="campo" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="La clave del script">
+    <button class="boton" id="cfgGuardar">Conectar</button>
+    <button class="mas oculto" id="cfgCerrar">Cancelar</button>
+  </div>
+</div>
+
+<div id="aviso"></div>
+
+<script>
+let tipo = 'Gasto', banco = 'Revolut', categoria = null, CATS = [], ULTIMOS = [], verTodos = false, ULTIMO_R = null;
+const guardarLocal = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+const leerLocal = k => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } };
+const ICONOS = { Piso:'🏠', Comida:'🛒', Sopar:'🍽️', Ocio:'🎉', Transporte:'⛽', Viajes:'✈️', Otros:'📦', Ahorro:'🐷',
+                 Bankinter:'🏦', Revolut:'💳', Efectivo:'💶' };
+const $ = id => document.getElementById(id);
+const eur = n => Number(n || 0).toLocaleString('es-ES', { style: 'currency', currency: 'EUR' });
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+const num = s => { s = String(s).trim(); return parseFloat(s.includes(',') ? s.replace(/\./g, '').replace(',', '.') : s); };
+const icono = n => ICONOS[n] || '•';
+
+function seg(id, cb) {
+  $(id).querySelectorAll('button').forEach(b => b.onclick = () => {
+    $(id).querySelectorAll('button').forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+    cb(b.dataset.v);
+  });
+}
+seg('banco', v => { banco = v; guardarLocal('banco', v); });
+function marcar(id, v) {
+  $(id).querySelectorAll('button').forEach(x => x.classList.toggle('on', x.dataset.v === v));
+}
+const bancoGuardado = leerLocal('banco');
+if (['Revolut', 'Bankinter', 'Efectivo'].includes(bancoGuardado)) { banco = bancoGuardado; marcar('banco', banco); }
+seg('tipo', v => ponerTipo(v));
+// Cambiar de página con la barra inferior
+document.querySelectorAll('#barraTabs button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('#barraTabs button').forEach(x => x.classList.toggle('on', x === b));
+  document.querySelectorAll('.pagina').forEach(pg => pg.classList.toggle('activa', pg.id === 'pag-' + b.dataset.p));
+  window.scrollTo(0, 0);
+  document.activeElement && document.activeElement.blur && document.activeElement.blur();
+});
+
+let siguiente = 0;
+seg('semanaPadres', v => siguiente = Number(v));
+function ponerTipo(v) {
+  tipo = v;
+  marcar('tipo', v);
+  const padres = v === 'Padres';
+  $('bloqueMov').classList.toggle('oculto', padres);
+  $('bloqueFecha').classList.toggle('oculto', padres);
+  $('notaPadres').classList.toggle('oculto', !padres);
+  $('bloqueSemana').classList.toggle('oculto', !padres);
+  if (padres) {   // en domingo, por defecto la próxima semana
+    siguiente = new Date().getDay() === 0 ? 1 : 0;
+    marcar('semanaPadres', String(siguiente));
+  }
+  $('etiquetaBanco').textContent = padres ? '¿Cómo te lo han dado?' : 'Banco';
+  $('guardar').textContent = v === 'Gasto' ? 'Guardar gasto' : v === 'Recibido' ? 'Guardar bizum' : 'Guardar dinero de padres';
+  $('rapidos').classList.toggle('oculto', padres || !$('rapidos').children.length);
+}
+
+// Fecha: hoy por defecto, "Cambiar" la muestra
+$('cambiarFecha').onclick = () => { $('fecha').classList.remove('oculto'); $('lineaFecha').classList.add('oculto'); };
+function resetFecha() {
+  $('fecha').value = hoy();
+  $('fecha').classList.add('oculto');
+  $('lineaFecha').classList.remove('oculto');
+}
+
+// Atajos: un toque rellena descripción, categoría y banco
+function pintarRapidos(lista) {
+  const cont = $('rapidos');
+  cont.innerHTML = '';
+  (lista || []).forEach(f => {
+    const b = document.createElement('button');
+    b.className = 'rapido';
+    b.textContent = icono(f.categoria) + ' ' + f.concepto;
+    b.onclick = () => {
+      ponerTipo(f.tipo);
+      $('concepto').value = f.concepto;
+      if (CATS.includes(f.categoria)) { categoria = f.categoria; pintarCats(); }
+      if (['Revolut', 'Bankinter', 'Efectivo'].includes(f.banco)) { banco = f.banco; marcar('banco', banco); }
+      $('importe').focus();
+    };
+    cont.appendChild(b);
+  });
+  cont.classList.toggle('oculto', tipo === 'Padres' || !cont.children.length);
+}
+
+// Intro en el teclado = guardar
+['importe', 'concepto'].forEach(id => $(id).addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); $(id).blur(); $('guardar').click(); }
+}));
+
+function pintarCats() {
+  if (!CATS.includes(categoria)) categoria = CATS.includes('Comida') ? 'Comida' : CATS[0];
+  const cont = $('categorias');
+  cont.innerHTML = '';
+  CATS.forEach(c => {
+    const b = document.createElement('button');
+    b.className = 'chip' + (c === categoria ? ' on' : '');
+    b.textContent = c;
+    b.onclick = () => { categoria = c; pintarCats(); };
+    cont.appendChild(b);
+  });
+}
+
+function hoy() {
+  const d = new Date();
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().slice(0, 10);
+}
+
+let tAviso;
+function aviso(t) {
+  const a = $('aviso');
+  a.textContent = t;
+  a.classList.add('ver');
+  clearTimeout(tAviso);
+  tAviso = setTimeout(() => a.classList.remove('ver'), 2200);
+}
+function error(e) {
+  $('guardar').disabled = false;
+  aviso('Error: ' + (e && e.message ? e.message : e));
+}
+
+function pintarUltimos() {
+  const lista = verTodos ? ULTIMOS : ULTIMOS.slice(0, 6);
+  $('ultimos').innerHTML = lista.length ? lista.map((m, i) => `
+    <div class="fila ${m.pend ? 'pend' : ''}">
+      <div class="mov">
+        <div class="icono">${icono(m.categoria)}</div>
+        <div class="txt">
+          <div class="nom">${esc(m.concepto || m.categoria)}</div>
+          <div class="sub">${m.pend ? '<span class="sinEnviar">Sin enviar</span> · ' : ''}${esc(m.fecha)} · ${esc(m.categoria)} · ${esc(m.banco)}</div>
+        </div>
+      </div>
+      <div style="white-space:nowrap;display:flex;align-items:center">
+        <b class="${m.neto > 0 ? '' : 'pos'}">${m.neto > 0 ? '−' : '+'}${eur(Math.abs(m.neto))}</b>
+        <button class="borrar" onclick="borrar(${i})" aria-label="Borrar">✕</button>
+      </div>
+    </div>`).join('') : '<div class="sub">Todavía no hay movimientos</div>';
+  $('verMas').classList.toggle('oculto', ULTIMOS.length <= 6);
+  $('verMas').textContent = verTodos ? 'Ver menos' : 'Ver más';
+}
+$('verMas').onclick = () => { verTodos = !verTodos; pintarUltimos(); };
+
+function pintar(r) {
+  $('semana').textContent = `Semana ${r.semana} de ${r.totalSemanas}`;
+  $('btnEsta').textContent = `Esta (sem. ${r.semana})`;
+  $('btnProxima').textContent = `Próxima (sem. ${r.semana + 1})`;
+  $('teQueda').textContent = eur(r.teQueda);
+  $('teQueda').className = 'grande ' + (r.teQueda < 0 ? 'neg' : 'pos');
+  $('presupuesto').textContent = eur(r.presupuesto);
+  $('padres').textContent = eur(r.padres);
+  $('gastado').textContent = eur(r.gastado);
+  $('dePadres').textContent = 'De tus padres: ' + eur(r.dePadres);
+  $('tuyo').textContent = 'Tuyo: ' + eur(r.tuyo);
+
+  $('cuentas').innerHTML = ['Bankinter', 'Revolut', 'Efectivo'].map(b => `
+    <div class="fila">
+      <div class="mov"><div class="icono">${icono(b)}</div><span style="font-size:16px">${b}</span></div>
+      <b style="font-size:17px">${eur(r.cuentas[b])}</b>
+    </div>`).join('');
+
+  const cats = r.categorias.filter(c => c.importe !== 0).sort((a, b) => b.importe - a.importe);
+  const max = Math.max(0, ...cats.map(c => c.importe));
+  $('cats').innerHTML = cats.length ? cats.map(c => `
+    <div class="cat">
+      <div class="top"><span>${icono(c.nombre)}&nbsp; ${esc(c.nombre)}</span><b>${eur(c.importe)}</b></div>
+      <div class="barra"><i style="width:${max > 0 ? Math.max(0, c.importe) / max * 100 : 0}%"></i></div>
+    </div>`).join('') : '<div class="sub">Sin gastos todavía</div>';
+
+  $('ahorro').textContent = eur(r.ahorro);
+  $('objetivo').textContent = 'de ' + eur(r.objetivo);
+  $('pct').textContent = Math.round(r.progreso * 100) + ' %';
+  $('barraAhorro').style.width = Math.min(100, Math.max(0, r.progreso * 100)) + '%';
+  $('dineroLibre').textContent = eur(r.dineroLibre);
+
+  ULTIMOS = r.ultimos;
+  pintarUltimos();
+  pintarRapidos(r.frecuentes);
+  ULTIMO_R = r;
+}
+
+// =====================================================================
+//  FUNCIONAR SIN CONEXIÓN
+//  - BASE: lo último que mandó Google (se guarda en el iPhone).
+//  - COLA: lo que has apuntado y aún no ha llegado a la hoja.
+//  Lo que ves en pantalla = BASE + COLA. Cuando hay internet, la COLA
+//  se envía sola; cada cosa lleva un id para que nunca se apunte dos veces.
+// =====================================================================
+let BASE = leerLocal('base');
+let COLA = leerLocal('cola') || [];
+let enviando = false, ultimoError = '';
+const r2 = n => Math.round(n * 100) / 100;
+const nuevoId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+
+function conf() {
+  const c = leerLocal('conexion') || {};
+  return { url: c.url || (window.CONFIG && CONFIG.URL_API) || '', clave: c.clave || '' };
+}
+const configurado = () => { const c = conf(); return /^https:\/\/script\.google\.com\/.+\/exec$/.test(c.url) && !!c.clave; };
+
+// Nº de semana de una fecha 'yyyy-MM-dd' (igual que la columna Semana de la hoja)
+function semanaDe(iso) {
+  if (!BASE || !BASE.inicio || !iso) return 0;
+  const d = s => { const [y, m, dd] = s.split('-').map(Number); return Date.UTC(y, m - 1, dd); };
+  const dias = Math.round((d(iso) - d(BASE.inicio)) / 86400000);
+  if (dias < 0) return 0;
+  return Math.min(BASE.resumen.totalSemanas, Math.floor(dias / 7) + 1);
+}
+
+// Aplica la cola a los últimos datos de Google para enseñarlo ya en pantalla
+function aplicar() {
+  const r = JSON.parse(JSON.stringify(BASE.resumen));
+  const pp = BASE.padresPagan || {};
+  const semAct = semanaDe(hoy()) || r.semana;
+  const cuentaEnSemana = cat => cat !== 'Viajes' && cat !== 'Ahorro' && (cat !== 'Piso' || pp.Piso);
+  const efecto = (neto, cat, banco, iso) => {
+    if (banco in r.cuentas) r.cuentas[banco] -= neto;
+    const c = r.categorias.find(x => x.nombre === cat);
+    if (c) c.importe += neto;
+    if (semanaDe(iso) === r.semana && cuentaEnSemana(cat)) {
+      r.gastado += neto; r.teQueda -= neto;
+      if (pp[cat]) r.dePadres -= neto;
+    }
+  };
+  const pendientes = [];
+  COLA.forEach(op => {
+    const d = op.datos;
+    if (op.accion === 'movimiento') {
+      const neto = d.tipo === 'Gasto' ? d.importe : -d.importe;
+      efecto(neto, d.categoria, d.banco, d.fecha);
+      const [, mm, dd] = d.fecha.split('-');
+      pendientes.push({ pend: true, id: op.id, fecha: dd + '/' + mm, iso: d.fecha, concepto: d.concepto,
+                        categoria: d.categoria, banco: d.banco, neto });
+    } else if (op.accion === 'padres') {
+      if (d.semana === r.semana) { r.padres += d.importe; r.teQueda += d.importe; r.dePadres += d.importe; }
+      r.cuentas[d.banco in r.cuentas ? d.banco : 'Efectivo'] += d.importe;
+    } else if (op.accion === 'borrar') {
+      const k = r.ultimos.findIndex(m => m.fila === d.fila);
+      if (k >= 0) { const m = r.ultimos[k]; efecto(-m.neto, m.categoria, m.banco, m.iso); r.ultimos.splice(k, 1); }
+    }
+  });
+  r.ultimos = pendientes.reverse().concat(r.ultimos);
+  r.tuyo = r.teQueda - r.dePadres;
+  ['gastado', 'teQueda', 'dePadres', 'tuyo', 'padres'].forEach(k => r[k] = r2(r[k]));
+  Object.keys(r.cuentas).forEach(k => r.cuentas[k] = r2(r.cuentas[k]));
+  r.categorias.forEach(c => c.importe = r2(c.importe));
+  if (semAct !== r.semana) r.semana = semAct;   // si ha cambiado la semana estando sin conexión
+  return r;
+}
+
+function pintarTodo() {
+  if (BASE && BASE.resumen) {
+    CATS = BASE.categorias || CATS;
+    pintarCats();
+    pintar(aplicar());
+  }
+  pintarEstado();
+}
+
+function pintarEstado() {
+  const n = COLA.length, sinRed = !navigator.onLine;
+  const e = $('estado');
+  e.classList.toggle('oculto', !n && !sinRed && !ultimoError);
+  e.classList.toggle('offline', sinRed);
+  $('textoEstado').textContent =
+    n ? (n === 1 ? '1 cosa sin enviar' : n + ' cosas sin enviar') + (sinRed ? ' · sin conexión' : enviando ? ' · enviando…' : ultimoError ? ' · ' + ultimoError : '')
+      : sinRed ? 'Sin conexión · enseñando lo último guardado' : ultimoError;
+  $('reintentar').classList.toggle('oculto', !n || sinRed || enviando);
+}
+
+function guardarCola() { guardarLocal('cola', COLA); }
+
+// Habla con Google
+function api(ops) {
+  const c = conf();
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), 40000);
+  return fetch(c.url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },   // texto plano: así Google no pone pegas (CORS)
+    body: JSON.stringify({ clave: c.clave, accion: 'sync', datos: { ops } }),
+    redirect: 'follow',
+    signal: ctrl.signal
+  })
+    .then(r => r.json())
+    .then(j => { if (!j.ok) throw new Error(j.error || 'Error desconocido'); return j.resultado; })
+    .catch(e => { throw new Error(e.name === 'AbortError' ? 'Google tarda demasiado' : e.name === 'TypeError' ? 'Sin conexión' : e.name === 'SyntaxError' ? 'Google no ha respondido bien (revisa la URL y que el acceso sea «Cualquier usuario»)' : e.message); })
+    .finally(() => clearTimeout(t));
+}
+
+// Envía la cola (si hay) y trae los datos frescos
+function sincronizar() {
+  if (enviando || !configurado()) return Promise.resolve();
+  enviando = true; pintarEstado();
+  const ops = COLA.slice(0, 50);
+  return api(ops).then(res => {
+    const resultados = res.resultados || [];
+    delete res.resultados;
+    BASE = res; guardarLocal('base', BASE);
+    const terminados = new Set();
+    resultados.forEach(x => {
+      terminados.add(x.id);
+      if (!x.ok) aviso('No se ha podido apuntar: ' + x.error);
+    });
+    COLA = COLA.filter(op => !terminados.has(op.id));
+    guardarCola();
+    ultimoError = '';
+  }, e => {
+    ultimoError = e.message === 'Sin conexión' ? '' : e.message;
+    if (e.message === 'Clave incorrecta') abrirConexion();
+  }).finally(() => {
+    enviando = false;
+    pintarTodo();
+    if (COLA.length && navigator.onLine && !ultimoError) setTimeout(sincronizar, 300);   // quedaban más de 50
+  });
+}
+
+function encolar(accion, datos) {
+  COLA.push({ id: nuevoId(), accion, datos, creado: Date.now() });
+  guardarCola();
+  pintarTodo();
+  sincronizar();
+}
+
+$('guardar').onclick = () => {
+  const texto = $('importe').value.trim();
+  const imp = num(texto);
+  if (!texto || isNaN(imp) || imp <= 0) { aviso('Escribe un importe'); $('importe').focus(); return; }
+  if (!BASE) { aviso('Primero conecta con la hoja (necesita internet una vez)'); return; }
+  const importe = r2(imp);
+
+  if (tipo === 'Padres') {
+    const semana = (semanaDe(hoy()) || 0) + siguiente;
+    if (semana < 1 || semana > BASE.resumen.totalSemanas) { aviso('Esa semana está fuera del presupuesto'); return; }
+    encolar('padres', { importe, banco, semana });
+  } else {
+    encolar('movimiento', { tipo, importe, concepto: $('concepto').value.trim(), categoria, banco, fecha: $('fecha').value || hoy() });
+  }
+  $('importe').value = '';
+  $('concepto').value = '';
+  resetFecha();
+  const msg = tipo === 'Padres' ? 'Dinero de padres guardado ✓' : 'Guardado ✓';
+  aviso(navigator.onLine ? msg : msg + ' · se enviará al tener conexión');
+};
+
+function borrar(i) {
+  const m = ULTIMOS[i];
+  if (!m || !confirm('¿Borrar este movimiento?')) return;
+  if (m.pend) {   // aún no había llegado a la hoja: se quita de la cola y listo
+    COLA = COLA.filter(op => op.id !== m.id);
+    guardarCola(); pintarTodo(); aviso('Borrado');
+    return;
+  }
+  encolar('borrar', { fila: m.fila, neto: m.neto, concepto: m.concepto });
+  aviso(navigator.onLine ? 'Borrado' : 'Borrado · se enviará al tener conexión');
+}
+
+// ---------- Pantalla de conexión (URL + clave) ----------
+function abrirConexion() {
+  const c = conf();
+  $('cfgUrl').value = c.url;
+  $('cfgClave').value = c.clave;
+  $('cfgCerrar').classList.toggle('oculto', !BASE);
+  $('conexion').classList.remove('oculto');
+}
+$('abrirConexion').onclick = abrirConexion;
+$('cfgCerrar').onclick = () => $('conexion').classList.add('oculto');
+$('cfgGuardar').onclick = () => {
+  const url = $('cfgUrl').value.trim(), clave = $('cfgClave').value.trim();
+  if (!/^https:\/\/script\.google\.com\/.+\/exec$/.test(url)) { aviso('La URL tiene que acabar en /exec'); return; }
+  if (!clave) { aviso('Escribe la clave'); return; }
+  const antes = leerLocal('conexion');
+  guardarLocal('conexion', { url, clave });
+  $('cfgGuardar').disabled = true; $('cfgGuardar').textContent = 'Conectando…';
+  api([]).then(res => {
+    delete res.resultados;
+    BASE = res; guardarLocal('base', BASE);
+    $('conexion').classList.add('oculto');
+    aviso('Conectado ✓');
+    ultimoError = '';
+    pintarTodo();
+    sincronizar();
+  }, e => {
+    guardarLocal('conexion', antes);
+    aviso('No se ha podido conectar: ' + e.message);
+  }).finally(() => { $('cfgGuardar').disabled = false; $('cfgGuardar').textContent = 'Conectar'; });
+};
+
+// ---------- Arranque ----------
+resetFecha();
+pintarTodo();
+if (!configurado()) abrirConexion();
+else sincronizar();
+
+// Se envía solo: al recuperar internet, al volver a la app y cada 20 s si queda algo
+window.addEventListener('online', () => { pintarEstado(); sincronizar(); });
+window.addEventListener('offline', pintarEstado);
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') sincronizar(); });
+setInterval(() => { if (COLA.length && navigator.onLine && document.visibilityState === 'visible') sincronizar(); }, 20000);
+$('reintentar').onclick = () => { ultimoError = ''; sincronizar(); };
+
+// Para que abra sin internet (guarda la app en el iPhone)
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>
